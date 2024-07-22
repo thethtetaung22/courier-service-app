@@ -1,9 +1,8 @@
-import Image from "next/image";
+import React from 'react';
+import Dashboard from "@/components/component/Dashboard";
 
 export default function Home() {
     return (
-        <>
-            <h1>Dashboard</h1>
-        </>
+        <Dashboard />
     );
 }
