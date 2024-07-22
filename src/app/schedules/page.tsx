@@ -1,9 +1,10 @@
 import React from 'react'
+import Schedules from '@/components/component/Schedules';
 
 const SchedulesPage = () => {
     return (
-        <div>SchedulesPage</div>
+        <Schedules />
     )
 }
 
-export default SchedulesPage
+export default SchedulesPage;
