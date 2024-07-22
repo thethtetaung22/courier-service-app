@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Schedules from '@/components/component/Schedules';
 
 const SchedulesPage = () => {
     return (
-        <Schedules />
+        <Suspense fallback={<div>Loading...</div>}>
+            <Schedules />
+        </Suspense>
     )
 }
 
