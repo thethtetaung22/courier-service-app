@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import SideNav from "@/components/component/side-nav";
 import Header from "@/components/component/header";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    
+
     return (
         <html lang="en">
             <body className={inter.className}>
@@ -26,6 +27,7 @@ export default function RootLayout({
                         <Header />
                         <main className="flex flex-1 bg-secondary flex-col gap-4 p-4 md:gap-8 md:p-6">
                             {children}
+                            <Toaster />
                         </main>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import VehicleTable from "./VehicleTable";
 import TableTemplate from "../TableTemplate";
 import AddNewVehicleDialog from "./AddNewVehicleDialog";
+import { Vehicle } from "@prisma/client";
 
 const actionButtons = () => (
     <div className="flex gap-4">
@@ -14,11 +15,17 @@ const actionButtons = () => (
     </div>
 )
 
-const Vehicles = () => {
+const Vehicles = ({
+    total,
+    vehicles
+}: {
+    total?: number,
+    vehicles: Array<Vehicle>
+}) => {
 
     return (
         <TableTemplate actionButtons={<AddNewVehicleDialog />}>
-            <VehicleTable />
+            <VehicleTable total={total} vehicles={vehicles} />
         </TableTemplate>
     )
 }

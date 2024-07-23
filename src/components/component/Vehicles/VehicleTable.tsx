@@ -20,11 +20,22 @@ import {
     PaginationPrevious
 } from "@/components/ui";
 import { EllipsisVertical } from "lucide-react";
-import { vehicles } from "@/lib/constants";
+// import { vehicles } from "@/lib/constants";
 import { cn } from "../../../lib/utils";
 import AddNewVehicleDialog from "./AddNewVehicleDialog";
+import { Vehicle } from "@prisma/client";
+import { deleteVehicle } from "../../../actions/vehicle";
+import { toast } from "sonner";
+import DeleteVehicleButton from "./DeleteVehicleButton";
+import { DropdownMenuItemIndicator } from "@radix-ui/react-dropdown-menu";
 
-const VehicleTable = () => {
+const VehicleTable = ({
+    total,
+    vehicles
+}: {
+    total?: number,
+    vehicles: Array<Vehicle>
+}) => {
 
     return (
         <>
@@ -32,7 +43,7 @@ const VehicleTable = () => {
                 <Table>
                     <TableHeader className="sticky top-0 z-10 bg-white rounded-xl">
                         <TableRow className="flex py-3">
-                            <TableHead className="w-[140px] h-full">ID</TableHead>
+                            <TableHead className="w-[100px] lg:w-[200px] h-full">ID</TableHead>
                             <TableHead className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full">License No.</TableHead>
                             <TableHead className="hidden md:table-cell flex-1 h-full">Brand</TableHead>
                             <TableHead className="hidden md:table-cell flex-1 h-full">Model</TableHead>
@@ -46,12 +57,12 @@ const VehicleTable = () => {
                     <Table>
                         <TableBody className="w-full">
                             {
-                                vehicles.map((vehicle, i) => (
+                                vehicles?.map((vehicle, i) => (
                                     <TableRow key={i} className={cn(
                                         "flex items-center hover:bg-gray-200",
                                         i % 2 === 0 && 'bg-sky-100'
                                     )}>
-                                        <TableCell className="w-[140px] font-medium">{vehicle.id}</TableCell>
+                                        <TableCell className="max-w-[100px] lg:w-[200px] font-medium flex overflow-hidden text-ellipsis flex-nowrap whitespace-nowrap text-nowrap">{vehicle.id}</TableCell>
                                         <TableCell className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full">{vehicle.licensePlate}</TableCell>
                                         <TableCell className="hidden md:table-cell flex-1 h-full">{vehicle.make}</TableCell>
                                         <TableCell className="hidden md:table-cell flex-1 h-full">{vehicle.model}</TableCell>
@@ -59,7 +70,7 @@ const VehicleTable = () => {
                                             <span className={cn(
                                                 'rounded-full px-3 text-xs py-1 bg-orange-200',
                                                 vehicle.status.toLowerCase() === 'active' && 'bg-green-200'
-                                            )}>{vehicle.status}</span>
+                                            )}>{vehicle.status.replace('_', ' ')}</span>
                                         </TableCell>
                                         <TableCell className="hidden sm:table-cell text-center flex-1 h-full">
                                             {vehicle.fuelEfficiency}
@@ -82,7 +93,8 @@ const VehicleTable = () => {
                                                     <DropdownMenuItem asChild>
                                                         <AddNewVehicleDialog
                                                             isEdit
-                                                            trigger={ 
+                                                            vehicle={vehicle}
+                                                            trigger={
                                                                 <Button variant={'ghost'} className="w-full p-0 px-2">
                                                                     <span className="text-left w-full">Edit</span>
                                                                 </Button>
@@ -90,8 +102,8 @@ const VehicleTable = () => {
                                                         />
                                                     </DropdownMenuItem>
 
-                                                    <DropdownMenuItem className="text-red-600">
-                                                        <span className="text-left w-full">Delete</span>
+                                                    <DropdownMenuItem>
+                                                        <DeleteVehicleButton id={vehicle.id} />
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>

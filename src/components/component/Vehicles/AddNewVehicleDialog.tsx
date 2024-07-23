@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState } from 'react'
 import {
     Button,
@@ -30,6 +31,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cn, getYears } from '@/lib/utils';
 import { VEHICLE_STATUS } from '@/lib/enums';
 import { colors } from '@/lib/constants';
+import { createVehicle } from '../../../actions/vehicle';
+import { Vehicle } from '@prisma/client';
+import { useToast } from '@/components/ui/use-toast';
+import { createVehicleSchema } from '../../../schemas/vehicle';
 
 const AddNewVehicleDialog = ({
     isEdit,
@@ -37,27 +42,49 @@ const AddNewVehicleDialog = ({
     trigger
 }: {
     isEdit?: boolean,
-    vehicle?: Record<string, any>,
+    vehicle?: Vehicle,
     trigger?: React.ReactNode
 }) => {
     const [open, setOpen] = useState(false);
     const [color, setColor] = useState('');
+    const { toast } = useToast();
 
-    const form = useForm<z.infer<any>>({
-        // resolver: zodResolver(any),
+    const form = useForm<z.infer<typeof createVehicleSchema>>({
+        resolver: zodResolver(createVehicleSchema),
         defaultValues: {
-            licensePlate: '',
-            make: '',
-            model: '',
-            color: '',
-            year: '',
-            status: '',
-            fuelEfficiency: '',
+            licensePlate: vehicle?.licensePlate || '',
+            make: vehicle?.make || '',
+            model: vehicle?.model || '',
+            color: vehicle?.color || 'White',
+            year: vehicle?.year || 2024,
+            status: vehicle?.status ? VEHICLE_STATUS[vehicle?.status] : VEHICLE_STATUS.Active,
+            fuelEfficiency: vehicle?.fuelEfficiency || 27.0,
         },
     });
 
-    const onSubmit = (data: z.infer<any>) => {
-        console.log(data)
+    const onSubmit = async (data: z.infer<typeof createVehicleSchema>) => {
+        if (isEdit) {
+            form.reset();
+        } else {
+            const payload = {
+                ...data,
+                color: data?.color === 'Other' ? color : data?.color
+            }
+            const result = await createVehicle(payload);
+
+            if (result?.success) {
+                setOpen(false);
+                form.reset();
+            }
+
+            toast({
+                title: result?.success ? 'Vehicle created successful.' : 'Failed to create vehicle.',
+                style: {
+                    background: result?.success ? 'green' : 'red',
+                    color: 'white'
+                }
+            });
+        }
     }
 
     return (
@@ -74,7 +101,7 @@ const AddNewVehicleDialog = ({
             </DialogTrigger>
             <DialogContent className='bg-white max-w-2xl w-full p-4 space-y-4 rounded-xl max-h-[80vh] overflow-auto'>
                 <DialogHeader>
-                    <DialogTitle>{isEdit?'Edit': 'Add New'} Vehicle</DialogTitle>
+                    <DialogTitle>{isEdit ? 'Edit' : 'Add New'} Vehicle</DialogTitle>
                     <DialogDescription>{isEdit ? 'Edit the vehicle' : 'Add the vehicle '} details here.</DialogDescription>
                 </DialogHeader>
 
@@ -166,8 +193,8 @@ const AddNewVehicleDialog = ({
                                     <FormLabel className='text-gray-600 ml-1 text-left'>Year</FormLabel>
                                     <FormControl>
                                         <Select
-                                            {...field}
-                                            onValueChange={field.onChange}
+                                            value={field.value.toString()}
+                                            onValueChange={(value: string) => field.onChange(Number(value))}
                                         >
                                             <SelectTrigger className="w-full text-gray-800">
                                                 <SelectValue placeholder="Select Year" className='text-gray-800'>{field.value}</SelectValue>
@@ -237,8 +264,8 @@ const AddNewVehicleDialog = ({
                     </form>
                 </Form>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     )
 }
 
-export default AddNewVehicleDialog
+export default AddNewVehicleDialog;
