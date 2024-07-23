@@ -22,9 +22,10 @@ import {
 import { EllipsisVertical } from "lucide-react";
 import { vehicles } from "@/lib/constants";
 import { cn } from "../../../lib/utils";
+import AddNewVehicleDialog from "./AddNewVehicleDialog";
 
 const VehicleTable = () => {
-    
+
     return (
         <>
             <div>
@@ -66,15 +67,32 @@ const VehicleTable = () => {
                                         <TableCell className="text-right">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild className="p-0">
+
                                                     <Button variant="ghost" size="icon" className="p-0">
                                                         <EllipsisVertical />
                                                         <span className="sr-only">Actions</span>
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end" className="bg-[#ffffff] border-gray-300 shadow-xl">
-                                                    <DropdownMenuItem className="hover:bg-[#bbb]">View Details</DropdownMenuItem>
-                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                    <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
+
+                                                    <DropdownMenuItem className="hover:bg-[#bbb]">
+                                                        <span className="text-left w-full">View Details</span>
+                                                    </DropdownMenuItem>
+
+                                                    <DropdownMenuItem asChild>
+                                                        <AddNewVehicleDialog
+                                                            isEdit
+                                                            trigger={ 
+                                                                <Button variant={'ghost'} className="w-full p-0 px-2">
+                                                                    <span className="text-left w-full">Edit</span>
+                                                                </Button>
+                                                            }
+                                                        />
+                                                    </DropdownMenuItem>
+
+                                                    <DropdownMenuItem className="text-red-600">
+                                                        <span className="text-left w-full">Delete</span>
+                                                    </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>

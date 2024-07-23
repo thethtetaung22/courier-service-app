@@ -81,3 +81,46 @@ export const schedules = [
         }
     },
 ]
+
+export const colors = [
+    {
+        bgColor: 'bg-white',
+        label: 'White'
+    }, 
+    {
+        bgColor: 'bg-black',
+        label: 'Black'
+    }, 
+    {
+        bgColor: 'bg-red-500',
+        label: 'Red'
+    }, 
+    {
+        bgColor: 'bg-blue-500',
+        label: 'Blue'
+    }, 
+    {
+        bgColor: 'bg-gray-500',
+        label: 'Gray'
+    }, 
+    {
+        bgColor: 'bg-[#A52A2A]',
+        label: 'Brown'
+    }, 
+    {
+        bgColor: 'bg-yellow-500',
+        label: 'Yellow'
+    }, 
+    {
+        bgColor: 'bg-orange-500',
+        label: 'Orange'
+    }, 
+    {
+        bgColor: 'bg-[#C0C0C0]',
+        label: 'Silver'
+    },
+    {
+        bgColor: '',
+        label: 'Other'
+    },
+]

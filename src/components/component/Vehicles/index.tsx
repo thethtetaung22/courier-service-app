@@ -3,6 +3,7 @@ import { Button } from "@/components/ui";
 import { Plus } from "lucide-react";
 import VehicleTable from "./VehicleTable";
 import TableTemplate from "../TableTemplate";
+import AddNewVehicleDialog from "./AddNewVehicleDialog";
 
 const actionButtons = () => (
     <div className="flex gap-4">
@@ -16,7 +17,7 @@ const actionButtons = () => (
 const Vehicles = () => {
 
     return (
-        <TableTemplate actionButtons={actionButtons()}>
+        <TableTemplate actionButtons={<AddNewVehicleDialog />}>
             <VehicleTable />
         </TableTemplate>
     )
