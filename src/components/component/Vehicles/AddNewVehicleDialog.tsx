@@ -31,10 +31,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cn, getYears } from '@/lib/utils';
 import { VEHICLE_STATUS } from '@/lib/enums';
 import { colors } from '@/lib/constants';
-import { createVehicle } from '../../../actions/vehicle';
+import { createVehicle, updateVehicle } from '../../../actions/vehicle';
 import { Vehicle } from '@prisma/client';
 import { useToast } from '@/components/ui/use-toast';
-import { createVehicleSchema } from '../../../schemas/vehicle';
+import { createVehicleSchema, updateVehicleSchema } from '../../../schemas/vehicle';
+import { useRouter } from 'next/navigation';
 
 const AddNewVehicleDialog = ({
     isEdit,
@@ -45,6 +46,7 @@ const AddNewVehicleDialog = ({
     vehicle?: Vehicle,
     trigger?: React.ReactNode
 }) => {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [color, setColor] = useState('');
     const { toast } = useToast();
@@ -58,19 +60,36 @@ const AddNewVehicleDialog = ({
             color: vehicle?.color || 'White',
             year: vehicle?.year?.toString() || '2024',
             status: vehicle?.status ? VEHICLE_STATUS[vehicle?.status] : VEHICLE_STATUS.Active,
-            fuelEfficiency: vehicle?.fuelEfficiency || 27.0,
+            fuelEfficiency: vehicle?.fuelEfficiency || 0,
         },
     });
 
-    const onSubmit = async (data: z.infer<typeof createVehicleSchema>) => {
-        if (isEdit) {
-            form.reset();
-        } else {
-            const payload = {
-                ...data,
-                year: data?.year,
-                color: data?.color === 'Other' ? color : data?.color
+    const onSubmit = async (data: z.infer<typeof createVehicleSchema | typeof updateVehicleSchema>) => {
+        const payload = {
+            ...data,
+            year: data?.year,
+            color: data?.color === 'Other' ? color : data?.color
+        } as any;
+        console.log(payload);
+        console.log(isEdit, vehicle);
+
+        if (isEdit && vehicle?.id) {
+            const result = await updateVehicle(vehicle.id, payload);
+
+            if (result?.success) {
+                setOpen(false);
+                form.reset();
             }
+            router.refresh();
+
+            toast({
+                title: result?.message,
+                style: {
+                    background: result?.success ? 'green' : 'red',
+                    color: 'white'
+                }
+            });
+        } else {
             const result = await createVehicle(payload);
 
             if (result?.success) {
@@ -79,7 +98,7 @@ const AddNewVehicleDialog = ({
             }
 
             toast({
-                title: result?.success ? 'Vehicle created successful.' : 'Failed to create vehicle.',
+                title: result.message,
                 style: {
                     background: result?.success ? 'green' : 'red',
                     color: 'white'
@@ -203,7 +222,7 @@ const AddNewVehicleDialog = ({
                                             <SelectContent className="overflow-auto max-h-[30vh]">
                                                 {
                                                     getYears()?.map((year: any) => (
-                                                        <SelectItem key={year} value={year}>{year}</SelectItem>
+                                                        <SelectItem key={year} value={year?.toString()}>{year?.toString()}</SelectItem>
                                                     ))
                                                 }
                                             </SelectContent>

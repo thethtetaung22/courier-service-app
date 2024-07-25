@@ -31,7 +31,7 @@ const TableTemplate = ({
             <div className="flex justify-between items-center">
                 <h1 className="font-semibold text-lg md:text-2xl">Vehicles</h1>
                 <div className="flex gap-4 items-center">
-                    <div className="relative w-full w-2xl flex items-center">
+                    <div className="hidden sm:flex relative w-full w-2xl items-center">
                         <SearchIcon className="absolute left-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
                         <Input
                             type="search"

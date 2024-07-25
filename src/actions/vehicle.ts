@@ -1,6 +1,6 @@
 'use server'
 
-import { createVehicleSchema } from "@/schemas/vehicle";
+import { createVehicleSchema, updateVehicleSchema } from "@/schemas/vehicle";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -59,18 +59,19 @@ export const createVehicle = async (
                 fuelEfficiency
             },
         });
-        console.log('result:', result);
+
         revalidatePath("/vehicles");
 
         return {
             success: true,
+            message: 'Vehicle created successful.',
             result: result
         };
     } catch (error) {
         console.log(error)
         return {
             success: false,
-            message: 'Failed to create vehicl.',
+            message: 'Failed to create vehicle.',
             error
         };
     }
@@ -78,12 +79,12 @@ export const createVehicle = async (
 
 export const updateVehicle = async (
     id: string,
-    data: z.infer<typeof createVehicleSchema>
+    data: z.infer<typeof updateVehicleSchema>
 ) => {
     try {
 
-        const validation = createVehicleSchema.safeParse(data);
-
+        const validation = updateVehicleSchema.safeParse(data);
+        console.log(validation?.error);
         if (!validation.success) return { message: "Invalid Field", success: false };
 
         const {
@@ -96,29 +97,52 @@ export const updateVehicle = async (
             fuelEfficiency,
         } = validation.data;
 
-        const result = await prisma.vehicle.create({
-            data: {
-                licensePlate,
-                make,
-                model,
-                year: Number(year),
-                color,
-                status,
-                fuelEfficiency
-            },
+        let payload = {} as Record<string, any>;
+
+        if (licensePlate) {
+            payload['licensePlate'] = licensePlate;
+        }
+
+        if (make) {
+            payload['make'] = make;
+        }
+
+        if (model) {
+            payload['model'] = model;
+        }
+
+        if (year) {
+            payload['year'] = Number(year);
+        }
+
+        if (color) {
+            payload['color'] = color;
+        }
+
+        if (status) {
+            payload['status'] = status;
+        }
+
+        if (fuelEfficiency) {
+            payload['fuelEfficiency'] = Number(fuelEfficiency);
+        }
+
+        const result = await prisma.vehicle.update({
+            where: { id },
+            data: { ...payload },
         });
-        console.log('result:', result);
+
         revalidatePath("/vehicles");
 
         return {
             success: true,
-            result: result
+            message: 'Vehicle updated successful.',
         };
     } catch (error) {
         console.log(error)
         return {
             success: false,
-            message: 'Failed to create vehicl.',
+            message: 'Failed to update vehicle.',
             error
         };
     }

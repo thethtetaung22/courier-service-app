@@ -1,8 +1,7 @@
 import React from 'react'
-import { Package2Icon, SearchIcon } from 'lucide-react'
+import { Package2Icon } from 'lucide-react'
 import Link from 'next/link'
 import {
-    Input,
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -12,7 +11,7 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage
-} from '../ui';
+} from '@/components/ui';
 
 const Header = () => {
 
