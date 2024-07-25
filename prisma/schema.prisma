@@ -18,6 +18,11 @@ enum VehicleStatus {
     Maintenance_Required
 }
 
+enum ScheduleStatus {
+    SCHEDULED
+    COMPLETED
+}
+
 model Vehicle {
     id             String        @id @default(auto()) @map("_id") @db.ObjectId
     licensePlate   String        @unique
@@ -27,6 +32,18 @@ model Vehicle {
     year           Int
     fuelEfficiency Float
     status         VehicleStatus @default(Active)
-    updatedAt      DateTime      @default(now())
+    schedules      Schedule[]
+    updatedAt      DateTime      @updatedAt
     createdAt      DateTime      @default(now())
+}
+
+model Schedule {
+    id          String         @id @default(auto()) @map("_id") @db.ObjectId
+    Vehicle     Vehicle?       @relation(fields: [vehicleId], references: [id])
+    vehicleId   String?        @db.ObjectId
+    serviceDate DateTime
+    detail      String
+    status      ScheduleStatus @default(SCHEDULED)
+    updatedAt   DateTime       @updatedAt
+    createdAt   DateTime       @default(now())
 }
