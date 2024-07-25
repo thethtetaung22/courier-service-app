@@ -18,7 +18,7 @@ const actionButtons = () => (
 const Schedules = () => {
 
     return (
-        <TableTemplate actionButtons={actionButtons()}>
+        <TableTemplate title="Schedules" actionButtons={actionButtons()}>
             <ScheduleTable />
         </TableTemplate>
     )

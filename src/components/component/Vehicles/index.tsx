@@ -24,7 +24,7 @@ const Vehicles = ({
 }) => {
 
     return (
-        <TableTemplate actionButtons={<AddNewVehicleDialog />}>
+        <TableTemplate title="Vehicles" actionButtons={<AddNewVehicleDialog />}>
             <VehicleTable total={total} vehicles={vehicles} />
         </TableTemplate>
     )
