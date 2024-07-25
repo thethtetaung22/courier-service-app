@@ -53,7 +53,7 @@ export const createVehicle = async (
                 licensePlate,
                 make,
                 model,
-                year,
+                year: Number(year),
                 color,
                 status,
                 fuelEfficiency
@@ -101,7 +101,7 @@ export const updateVehicle = async (
                 licensePlate,
                 make,
                 model,
-                year,
+                year: Number(year),
                 color,
                 status,
                 fuelEfficiency

@@ -43,10 +43,11 @@ const VehicleTable = ({
                 <Table>
                     <TableHeader className="sticky top-0 z-10 bg-white rounded-xl">
                         <TableRow className="flex py-3">
-                            <TableHead className="w-[100px] lg:w-[200px] h-full">ID</TableHead>
+                            <TableHead className="max-w-[100px] lg:w-[400px] flex h-full">ID</TableHead>
                             <TableHead className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full">License No.</TableHead>
                             <TableHead className="hidden md:table-cell flex-1 h-full">Brand</TableHead>
                             <TableHead className="hidden md:table-cell flex-1 h-full">Model</TableHead>
+                            <TableHead className="hidden md:table-cell flex-1 h-full">Year</TableHead>
                             <TableHead className="hidden sm:table-cell text-center flex-1 h-full">Status</TableHead>
                             <TableHead className="hidden sm:table-cell text-center flex-1 h-full">Fuel Efficiency</TableHead>
                             <TableHead className="text-right h-full">Actions</TableHead>
@@ -62,10 +63,11 @@ const VehicleTable = ({
                                         "flex items-center hover:bg-gray-200",
                                         i % 2 === 0 && 'bg-sky-100'
                                     )}>
-                                        <TableCell className="max-w-[100px] lg:w-[200px] font-medium flex overflow-hidden text-ellipsis flex-nowrap whitespace-nowrap text-nowrap">{vehicle.id}</TableCell>
+                                        <TableCell className="max-w-[100px] lg:w-[400px] font-medium flex overflow-hidden text-ellipsis flex-nowrap whitespace-nowrap text-nowrap">{vehicle.id}</TableCell>
                                         <TableCell className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full">{vehicle.licensePlate}</TableCell>
                                         <TableCell className="hidden md:table-cell flex-1 h-full">{vehicle.make}</TableCell>
                                         <TableCell className="hidden md:table-cell flex-1 h-full">{vehicle.model}</TableCell>
+                                        <TableCell className="hidden md:table-cell flex-1 h-full">{vehicle.year?.toString()}</TableCell>
                                         <TableCell className="hidden sm:table-cell text-center flex-1 h-full">
                                             <span className={cn(
                                                 'rounded-full px-3 text-xs py-1 bg-orange-200',

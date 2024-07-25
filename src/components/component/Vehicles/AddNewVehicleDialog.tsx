@@ -56,7 +56,7 @@ const AddNewVehicleDialog = ({
             make: vehicle?.make || '',
             model: vehicle?.model || '',
             color: vehicle?.color || 'White',
-            year: vehicle?.year || 2024,
+            year: vehicle?.year?.toString() || '2024',
             status: vehicle?.status ? VEHICLE_STATUS[vehicle?.status] : VEHICLE_STATUS.Active,
             fuelEfficiency: vehicle?.fuelEfficiency || 27.0,
         },
@@ -68,6 +68,7 @@ const AddNewVehicleDialog = ({
         } else {
             const payload = {
                 ...data,
+                year: data?.year,
                 color: data?.color === 'Other' ? color : data?.color
             }
             const result = await createVehicle(payload);
@@ -193,8 +194,8 @@ const AddNewVehicleDialog = ({
                                     <FormLabel className='text-gray-600 ml-1 text-left'>Year</FormLabel>
                                     <FormControl>
                                         <Select
-                                            value={field.value.toString()}
-                                            onValueChange={(value: string) => field.onChange(Number(value))}
+                                            {...field}
+                                            onValueChange={field.onChange}
                                         >
                                             <SelectTrigger className="w-full text-gray-800">
                                                 <SelectValue placeholder="Select Year" className='text-gray-800'>{field.value}</SelectValue>
