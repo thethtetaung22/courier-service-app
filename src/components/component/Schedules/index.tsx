@@ -3,6 +3,7 @@ import { Button } from "@/components/ui";
 import { Plus } from "lucide-react";
 import ScheduleTable from "./ScheduleTable";
 import TableTemplate from "../TableTemplate";
+import AddNewScheduleDialog from "./AddNewScheduleDialog";
 
 
 const actionButtons = () => (
@@ -18,7 +19,7 @@ const actionButtons = () => (
 const Schedules = () => {
 
     return (
-        <TableTemplate title="Schedules" actionButtons={actionButtons()}>
+        <TableTemplate title="Schedules" actionButtons={<AddNewScheduleDialog />}>
             <ScheduleTable />
         </TableTemplate>
     )

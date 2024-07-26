@@ -4,6 +4,6 @@ export enum VEHICLE_STATUS {
 }
 
 export enum SCHEDULE_STATUS {
-    SCHEDULE = 'SCHEDULE',
+    SCHEDULED = 'SCHEDULED',
     COMPLETED = 'COMPLETED'
 }

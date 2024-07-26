@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { SCHEDULE_STATUS, VEHICLE_STATUS } from "@/lib/enums";
 
-export const createSchema = z.object({
+export const createScheduleSchema = z.object({
     serviceDate: z.date(),
-    status: z.enum([SCHEDULE_STATUS.COMPLETED, SCHEDULE_STATUS.SCHEDULE]),
-    type: z.string(),
+    status: z.enum([SCHEDULE_STATUS.COMPLETED, SCHEDULE_STATUS.SCHEDULED]),
+    detail: z.string(),
     vehicleId: z.string()
 });
 
