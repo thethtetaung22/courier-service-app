@@ -29,13 +29,8 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem
 } from '@/components/ui'
-import { CalendarIcon, Check, ChevronsUpDown, Plus } from 'lucide-react';
+import { CalendarIcon, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,30 +40,8 @@ import { Schedule } from '@prisma/client';
 import { useToast } from '@/components/ui/use-toast';
 import { createScheduleSchema, updateScheduleSchema } from '@/schemas/schedule';
 import { format } from "date-fns"
-
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
-
+import { VehicleCombobox } from '../VehicleCombobox';
+import { createSchedule } from '@/actions/schedule';
 
 const AddNewScheduleDialog = ({
     isEdit,
@@ -87,8 +60,6 @@ const AddNewScheduleDialog = ({
     const [hour, setHour] = useState('06');
     const [minute, setMinute] = useState('00');
     const [detail, setDetail] = useState('');
-    const [cmdValue, setCmdValue] = React.useState('');
-    const [value, setValue] = React.useState("")
 
     const form = useForm<z.infer<typeof createScheduleSchema>>({
         resolver: zodResolver(createScheduleSchema),
@@ -101,10 +72,15 @@ const AddNewScheduleDialog = ({
     });
 
     const onSubmit = async (data: z.infer<typeof createScheduleSchema | typeof updateScheduleSchema>) => {
+        console.log(data);
+        console.log(hour, minute);
+        let [day, month, year]: any = data?.serviceDate?.toLocaleDateString()?.split('/');
+        console.log(`${month}-${day}-${year} ${hour}:${minute}`);
         const payload = {
             ...data,
+            serviceDate: new Date(`${month}-${day}-${year} ${hour}:${minute}`)
         } as any;
-
+        console.log(payload);
         if (isEdit && schedule?.id) {
             // const result = await updateVehicle(vehicle.id, payload);
 
@@ -122,20 +98,20 @@ const AddNewScheduleDialog = ({
             //     }
             // });
         } else {
-            // const result = await createSchedule(payload);
+            const result = await createSchedule(payload);
 
-            // if (result?.success) {
-            //     setOpen(false);
-            //     form.reset();
-            // }
+            if (result?.success) {
+                setOpen(false);
+                form.reset();
+            }
 
-            // toast({
-            //     title: result.message,
-            //     style: {
-            //         background: result?.success ? 'green' : 'red',
-            //         color: 'white'
-            //     }
-            // });
+            toast({
+                title: result.message,
+                style: {
+                    background: result?.success ? 'green' : 'red',
+                    color: 'white'
+                }
+            });
         }
     }
 
@@ -191,9 +167,7 @@ const AddNewScheduleDialog = ({
                                                     mode="single"
                                                     selected={field.value}
                                                     onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                        date > new Date() || date < new Date("1900-01-01")
-                                                    }
+                                                    disabled={(date) => date < new Date()}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -214,7 +188,7 @@ const AddNewScheduleDialog = ({
                                             <SelectGroup>
                                                 {
                                                     Array.from({ length: 15 }, (v, i) => (
-                                                        <SelectItem key={i} value={`${(i + 6) < 10 && '0'}${(6 + i).toString()}`}>{(i + 6) < 10 && '0'}{6 + i}</SelectItem>
+                                                        <SelectItem key={i} value={`${(i + 6) < 10 ? '0' : ''}${(6 + i).toString()}`}>{(i + 6) < 10 && '0'}{6 + i}</SelectItem>
                                                     ))
                                                 }
                                             </SelectGroup>
@@ -229,7 +203,7 @@ const AddNewScheduleDialog = ({
                                             <SelectGroup>
                                                 {
                                                     Array.from({ length: 60 }, (v, i) => (
-                                                        <SelectItem key={i} value={`${i < 10 && '0'}${i}`}>{i < 10 && '0'}{i}</SelectItem>
+                                                        <SelectItem key={i} value={`${i < 10 ? '0' : ''}${i}`}>{i < 10 && '0'}{i}</SelectItem>
                                                     ))
                                                 }
                                             </SelectGroup>
@@ -267,48 +241,19 @@ const AddNewScheduleDialog = ({
                             )}
                         />
 
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={open}
-                                    className="w-[200px] justify-between"
-                                >
-                                    {value
-                                        ? frameworks.find((framework) => framework.value === value)?.label
-                                        : "Select framework..."}
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-0">
-                                <Command>
-                                    <CommandInput placeholder="Search framework..." />
-                                    <CommandEmpty>No framework found.</CommandEmpty>
-                                    <CommandGroup>
-                                        {frameworks.map((framework) => (
-                                            <CommandItem
-                                                key={framework.value}
-                                                value={framework.value}
-                                                onSelect={(currentValue) => {
-                                                    setValue(currentValue === value ? "" : currentValue)
-                                                    setOpen(false)
-                                                }}
-                                            >
-                                                <Check
-                                                    className={cn(
-                                                        "mr-2 h-4 w-4",
-                                                        value === framework.value ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                                {framework.label}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-
+                        <FormField
+                            control={form.control}
+                            name="vehicleId"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col w-full">
+                                    <FormLabel>Service Detail</FormLabel>
+                                    <VehicleCombobox
+                                        vehicles={vehicles}
+                                        handleSelect={(id: string) => form.setValue('vehicleId', id)}
+                                    />
+                                </FormItem>
+                            )}
+                        />
 
                         <DialogFooter>
                             <DialogClose asChild>

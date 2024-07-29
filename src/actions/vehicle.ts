@@ -56,7 +56,7 @@ export const createVehicle = async (
                 year: Number(year),
                 color,
                 status,
-                fuelEfficiency
+                fuelEfficiency: Number(fuelEfficiency)
             },
         });
 
@@ -176,7 +176,7 @@ export const getVehiclesForSchedule = async () => {
                 licensePlate: true,
                 make: true,
                 model: true,
-            },  
+            },
             orderBy: {
                 licensePlate: 'desc'
             }

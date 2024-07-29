@@ -8,7 +8,7 @@ export const createVehicleSchema = z.object({
     year: z.string(),
     color: z.string(),
     status: z.enum([VEHICLE_STATUS.Active, VEHICLE_STATUS.Maintenance_Required], { message: "Status must be 'Active' or 'Maintenance_Required'" }),
-    fuelEfficiency: z.number(),
+    fuelEfficiency: z.string(),
 });
 
 export const updateVehicleSchema = z.object({

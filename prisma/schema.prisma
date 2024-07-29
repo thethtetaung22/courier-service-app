@@ -35,6 +35,8 @@ model Vehicle {
     schedules      Schedule[]
     updatedAt      DateTime      @updatedAt
     createdAt      DateTime      @default(now())
+
+    @@map("vehicle")
 }
 
 model Schedule {
@@ -46,4 +48,6 @@ model Schedule {
     status      ScheduleStatus @default(SCHEDULED)
     updatedAt   DateTime       @updatedAt
     createdAt   DateTime       @default(now())
+
+    @@map("schedule")
 }

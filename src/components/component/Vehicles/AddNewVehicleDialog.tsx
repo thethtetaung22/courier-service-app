@@ -60,7 +60,7 @@ const AddNewVehicleDialog = ({
             color: vehicle?.color || 'White',
             year: vehicle?.year?.toString() || '2024',
             status: vehicle?.status ? VEHICLE_STATUS[vehicle?.status] : VEHICLE_STATUS.Active,
-            fuelEfficiency: vehicle?.fuelEfficiency || 0,
+            fuelEfficiency: vehicle?.fuelEfficiency?.toString() || '0',
         },
     });
 
