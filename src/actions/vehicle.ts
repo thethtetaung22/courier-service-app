@@ -7,11 +7,21 @@ import { revalidatePath } from "next/cache";
 
 export const getVehicles = async (params: Record<string, any>) => {
     try {
+        let orderBy = { createdAt: 'desc' } as Record<string, 'desc' | 'asc'>;
+
+        if (params?.sort) {
+            orderBy = {
+                [params.sort]: params?.order ? params?.order : 'asc'
+            }
+        }
+
+        if (params?.query) {
+
+        }
+
         const total = await prisma.vehicle.count();
         const result = await prisma.vehicle.findMany({
-            orderBy: {
-                createdAt: 'desc'
-            }
+            orderBy: orderBy
         });
 
         return {

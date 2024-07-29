@@ -19,7 +19,7 @@ import {
     PaginationNext,
     PaginationPrevious
 } from "@/components/ui";
-import { EllipsisVertical } from "lucide-react";
+import { ArrowDownUp, EllipsisVertical } from "lucide-react";
 // import { vehicles } from "@/lib/constants";
 import { cn } from "../../../lib/utils";
 import AddNewVehicleDialog from "./AddNewVehicleDialog";
@@ -44,14 +44,47 @@ const VehicleTable = ({
                 <div className="border-none shadow-sm rounded-lg max-h-[68vh] overflow-auto">
                     <Table>
                         <TableHeader className="sticky top-0 z-10 bg-white rounded-xl">
-                            <TableRow className="flex py-3">
-                                <TableHead className="w-[160px] lg:w-[300px] flex h-full">ID</TableHead>
-                                <TableHead className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full">License No.</TableHead>
-                                <TableHead className="hidden md:table-cell flex-1 h-full">Brand</TableHead>
-                                <TableHead className="hidden md:table-cell flex-1 h-full">Model</TableHead>
-                                <TableHead className="hidden md:table-cell flex-1 h-full">Year</TableHead>
-                                <TableHead className="hidden sm:table-cell text-center flex-1 h-full">Status</TableHead>
-                                <TableHead className="hidden sm:table-cell text-center flex-1 h-full">Fuel Efficiency</TableHead>
+                            <TableRow className="flex items-center py-3">
+                                <TableHead className="w-[160px] lg:w-[300px] flex h-full items-center">
+                                    <span>ID</span>
+                                    <Button variant={'ghost'} className="px-2">
+                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full flex items-center">
+                                    <span>License No.</span>
+                                    <Button variant={'ghost'} className="px-2">
+                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="hidden flex-1 h-full md:flex items-center">
+                                    <span>Brand</span>
+                                    <Button variant={'ghost'} className="px-2">
+                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="hidden flex-1 h-full md:flex items-center">
+
+                                    <span>Model</span>
+                                    <Button variant={'ghost'} className="px-2">
+                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="hidden flex-1 h-full md:flex items-center">
+                                    <span>Year</span>
+                                    <Button variant={'ghost'} className="px-2">
+                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="hidden md:flex text-center flex-1 h-full items-center">
+                                    <span>Status</span>
+                                    <Button variant={'ghost'} className="px-2">
+                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="hidden text-center flex-1 h-full md:flex items-center">
+                                    <span>Fuel Efficiency</span>
+                                </TableHead>
                                 <TableHead className="text-right h-full">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
