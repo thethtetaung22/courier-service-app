@@ -44,3 +44,31 @@ export const createSchedule = async (
         };
     }
 };
+
+export const getSchedules = async (params: Record<string, any>) => {
+    try {
+        const total = await prisma.schedule.count();
+        const result = await prisma.schedule.findMany({
+            include: {
+                vehicle: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: 10
+        });
+
+        return {
+            success: true,
+            total,
+            result
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: 'Failed to get schedules.',
+            result: []
+        };
+    }
+}

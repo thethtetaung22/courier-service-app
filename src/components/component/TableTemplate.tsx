@@ -29,7 +29,7 @@ const TableTemplate = ({
     }
 
     return (
-        <div className="flex h-full w-full flex-col gap-4">
+        <div className="flex h-full w-full flex-col gap-4 overflow-x-hidden">
             <div className="flex justify-between items-center">
                 <h1 className="font-semibold text-lg md:text-2xl">{title || 'Table'}</h1>
                 <div className="flex gap-4 items-center">

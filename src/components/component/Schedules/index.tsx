@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import ScheduleTable from "./ScheduleTable";
 import TableTemplate from "../TableTemplate";
 import AddNewScheduleDialog from "./AddNewScheduleDialog";
+import { ScheduleInterface } from "@/lib/interfaces";
 
 
 const actionButtons = () => (
@@ -16,11 +17,19 @@ const actionButtons = () => (
 )
 
 
-const Schedules = ({ vehicles }: { vehicles: any[] }) => {
+const Schedules = ({
+    total,
+    vehicles,
+    schedules
+}: {
+    total?: number;
+    vehicles: Record<string, any>[];
+    schedules: ScheduleInterface[];
+}) => {
 
     return (
         <TableTemplate title="Schedules" actionButtons={<AddNewScheduleDialog vehicles={vehicles} />}>
-            <ScheduleTable />
+            <ScheduleTable total={total} schedules={schedules} />
         </TableTemplate>
     )
 }
