@@ -28,9 +28,14 @@ import {
     SelectGroup,
     SelectItem,
     SelectTrigger,
-    SelectValue
+    SelectValue,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem
 } from '@/components/ui'
-import { CalendarIcon, Plus } from 'lucide-react';
+import { CalendarIcon, Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,21 +46,49 @@ import { useToast } from '@/components/ui/use-toast';
 import { createScheduleSchema, updateScheduleSchema } from '@/schemas/schedule';
 import { format } from "date-fns"
 
+const frameworks = [
+    {
+        value: "next.js",
+        label: "Next.js",
+    },
+    {
+        value: "sveltekit",
+        label: "SvelteKit",
+    },
+    {
+        value: "nuxt.js",
+        label: "Nuxt.js",
+    },
+    {
+        value: "remix",
+        label: "Remix",
+    },
+    {
+        value: "astro",
+        label: "Astro",
+    },
+]
+
+
 const AddNewScheduleDialog = ({
     isEdit,
     schedule,
-    trigger
+    trigger,
+    vehicles
 }: {
     isEdit?: boolean,
     schedule?: Schedule,
-    trigger?: React.ReactNode
+    trigger?: React.ReactNode,
+    vehicles: any[]
 }) => {
+    const { toast } = useToast();
+
     const [open, setOpen] = useState(false);
     const [hour, setHour] = useState('06');
     const [minute, setMinute] = useState('00');
     const [detail, setDetail] = useState('');
-
-    const { toast } = useToast();
+    const [cmdValue, setCmdValue] = React.useState('');
+    const [value, setValue] = React.useState("")
 
     const form = useForm<z.infer<typeof createScheduleSchema>>({
         resolver: zodResolver(createScheduleSchema),
@@ -181,7 +214,7 @@ const AddNewScheduleDialog = ({
                                             <SelectGroup>
                                                 {
                                                     Array.from({ length: 15 }, (v, i) => (
-                                                        <SelectItem value={`${(i + 6) < 10 && '0'}${(6 + i).toString()}`}>{(i + 6) < 10 && '0'}{6 + i}</SelectItem>
+                                                        <SelectItem key={i} value={`${(i + 6) < 10 && '0'}${(6 + i).toString()}`}>{(i + 6) < 10 && '0'}{6 + i}</SelectItem>
                                                     ))
                                                 }
                                             </SelectGroup>
@@ -196,7 +229,7 @@ const AddNewScheduleDialog = ({
                                             <SelectGroup>
                                                 {
                                                     Array.from({ length: 60 }, (v, i) => (
-                                                        <SelectItem value={`${i < 10 && '0'}${i}`}>{i < 10 && '0'}{i}</SelectItem>
+                                                        <SelectItem key={i} value={`${i < 10 && '0'}${i}`}>{i < 10 && '0'}{i}</SelectItem>
                                                     ))
                                                 }
                                             </SelectGroup>
@@ -234,33 +267,47 @@ const AddNewScheduleDialog = ({
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="vehicleId"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col w-full">
-                                    <FormLabel>Service Vehicle</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select Vehicle" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {
-                                                    Array.from({ length: 5 }, (v, i) => (
-                                                        <SelectItem value={`Vehicle${i.toString()}`}>{`Vehicle ${i.toString()}`}</SelectItem>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    {
-                                        field.value === 'other' && <Input placeholder='Enter service detail' value={detail} onChange={e => setDetail(e.target.value)} />
-                                    }
-                                </FormItem>
-                            )}
-                        />
-
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open}
+                                    className="w-[200px] justify-between"
+                                >
+                                    {value
+                                        ? frameworks.find((framework) => framework.value === value)?.label
+                                        : "Select framework..."}
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search framework..." />
+                                    <CommandEmpty>No framework found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {frameworks.map((framework) => (
+                                            <CommandItem
+                                                key={framework.value}
+                                                value={framework.value}
+                                                onSelect={(currentValue) => {
+                                                    setValue(currentValue === value ? "" : currentValue)
+                                                    setOpen(false)
+                                                }}
+                                            >
+                                                <Check
+                                                    className={cn(
+                                                        "mr-2 h-4 w-4",
+                                                        value === framework.value ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                                {framework.label}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
 
 
                         <DialogFooter>

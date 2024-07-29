@@ -167,3 +167,29 @@ export const deleteVehicle = async (id: string) => {
         };
     }
 }
+
+export const getVehiclesForSchedule = async () => {
+    try {
+        const result = await prisma.vehicle.findMany({
+            select: {
+                id: true,
+                licensePlate: true,
+                make: true,
+                model: true,
+            },  
+            orderBy: {
+                licensePlate: 'desc'
+            }
+        });
+
+        return {
+            success: true,
+            result
+        };
+    } catch (error) {
+        return {
+            success: false,
+            result: []
+        }
+    }
+}

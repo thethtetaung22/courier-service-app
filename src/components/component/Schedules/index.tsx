@@ -16,10 +16,10 @@ const actionButtons = () => (
 )
 
 
-const Schedules = () => {
+const Schedules = ({ vehicles }: { vehicles: any[] }) => {
 
     return (
-        <TableTemplate title="Schedules" actionButtons={<AddNewScheduleDialog />}>
+        <TableTemplate title="Schedules" actionButtons={<AddNewScheduleDialog vehicles={vehicles} />}>
             <ScheduleTable />
         </TableTemplate>
     )

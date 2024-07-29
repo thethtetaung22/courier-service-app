@@ -12,3 +12,4 @@ export * from './select';
 export * from './toast';
 export * from './popover';
 export * from './calendar';
+export * from './command';
