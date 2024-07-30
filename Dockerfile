@@ -6,9 +6,8 @@ RUN npm install --production
 COPY . .
 
 # Set the DATABASE_URL environment variable
-# You can replace this with the actual URL or an environment variable that Docker passes during runtime
 ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
+ENV DATABASE_URL=mongodb+srv://thethtetaung:pass12word23@kabarshop.v2gunna.mongodb.net/courier?retryWrites=true&w=majority&appName=kabarshop
 
 RUN npx prisma migrate dev --name init --schema=./prisma/schema.prisma
 RUN npm run build
