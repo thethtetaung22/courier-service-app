@@ -26,7 +26,7 @@ export const createSchedule = async (
                 serviceDate,
                 vehicleId,
                 detail
-            }
+            } as any
         });
         console.log('Schedule Cretaed:', result);
         revalidatePath("/schedules");
