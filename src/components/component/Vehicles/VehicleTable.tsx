@@ -13,21 +13,14 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
 } from "@/components/ui";
-import { ArrowDownNarrowWide, ArrowDownUp, ArrowUpWideNarrow, EllipsisVertical } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpWideNarrow, EllipsisVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AddNewVehicleDialog from "./AddNewVehicleDialog";
 import { Vehicle } from "@prisma/client";
 import DeleteVehicleButton from "./DeleteVehicleButton";
 import ViewVehicleDetailsDialog from "./ViewVehicleDetailsDialog";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import TablePagination from "../Pagination";
 
 const VehicleTable = ({
     total,
@@ -228,24 +221,7 @@ const VehicleTable = ({
                     </Table>
                 </div>
             </div>
-            <Pagination>
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious href="#" />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationLink href="#">10</PaginationLink>
-
-                    <PaginationItem>
-                        <PaginationNext href="#" />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+            <TablePagination total={total} />
         </>
     )
 }

@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 export const getVehicles = async (params: Record<string, any>) => {
     try {
         let where: Record<string, any> = {};
-
+        const take = 8;
         if (params?.query) {
             const queryStr = String(params.query);
 
@@ -56,8 +56,8 @@ export const getVehicles = async (params: Record<string, any>) => {
         const result = await prisma.vehicle.findMany({
             where,
             orderBy: { createdAt: 'desc' },
-            take: 10,
-            skip: params?.page ? Number(params.page) * 10 : 0
+            take,
+            skip: params?.page > 1 ? ((Number(params.page) - 1) * take) : 0
         });
 
         return {

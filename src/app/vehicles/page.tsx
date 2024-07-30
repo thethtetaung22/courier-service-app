@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react'
-import Vehicles from '@/components/component/Vehicles'
-import { getVehicles } from '../../actions/vehicle'
+import React, { Suspense } from 'react';
+import Vehicles from '@/components/component/Vehicles';
+import { getVehicles } from '@/actions/vehicle';
 
 const VehiclesPage = async ({
     searchParams

@@ -11,18 +11,12 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
 } from "@/components/ui";
 import { EllipsisVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScheduleInterface } from "@/lib/interfaces";
 import { format } from "date-fns";
+import TablePagination from "../Pagination";
 
 const ScheduleTable = ({
     total,
@@ -85,25 +79,7 @@ const ScheduleTable = ({
                     </Table>
                 </div>
             </div>
-
-            <Pagination>
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious href="#" />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationLink href="#">10</PaginationLink>
-
-                    <PaginationItem>
-                        <PaginationNext href="#" />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+            <TablePagination total={total} />
         </>
     )
 }
