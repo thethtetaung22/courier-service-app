@@ -1,6 +1,4 @@
-import React from 'react'
-import { Package2Icon } from 'lucide-react'
-import Link from 'next/link'
+import React, { Suspense } from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,15 +10,21 @@ import {
     AvatarFallback,
     AvatarImage
 } from '@/components/ui';
+import dynamic from 'next/dynamic';
+
+const LazyComponent = dynamic(() => import('./MobileNavDrawer'), { ssr: false });
 
 const Header = () => {
 
     return (
         <header className="flex justify-between lg:justify-end min-h-[60px] items-center gap-4 border-b bg-[#000000] px-6">
-            <Link href="#" className="text-[#fff] lg:hidden" prefetch={false}>
+            {/* <Link href="#" className="text-[#fff] lg:hidden" prefetch={false}>
                 <Package2Icon className="h-6 w-6" />
                 <span className="sr-only">Home</span>
-            </Link>
+            </Link> */}
+            <Suspense fallback={<div>Loading...</div>}>
+                <LazyComponent />
+            </Suspense>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Avatar className="rounded-full border border-gray-200 w-8 h-8 bg-[#dcdcdc]">
