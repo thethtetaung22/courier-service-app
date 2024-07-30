@@ -48,12 +48,14 @@ const AddNewScheduleDialog = ({
     isEdit,
     schedule,
     trigger,
-    vehicles
+    vehicles,
+    vehicleId
 }: {
     isEdit?: boolean,
     schedule?: Schedule,
     trigger?: React.ReactNode,
-    vehicles: any[]
+    vehicles: any[],
+    vehicleId?: string
 }) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -68,7 +70,7 @@ const AddNewScheduleDialog = ({
             serviceDate: schedule?.serviceDate ? new Date(schedule?.serviceDate) : new Date(),
             status: schedule?.status ? SCHEDULE_STATUS[schedule?.status] : SCHEDULE_STATUS.SCHEDULED,
             detail: schedule?.detail || 'Cleaning',
-            vehicleId: schedule?.vehicleId || ''
+            vehicleId: ''
         },
     });
 
@@ -124,8 +126,13 @@ const AddNewScheduleDialog = ({
             setHour(`${h < 10 ? '0' : ''}${h}`);
             setMinute(`${m < 10 ? '0' : ''}${m}`);
         }
+
         if (schedule?.vehicleId) {
             form.setValue('vehicleId', schedule.vehicleId)
+        }
+
+        if (vehicleId) {
+            form.setValue('vehicleId', vehicleId)
         }
     }, [schedule])
 
@@ -260,8 +267,9 @@ const AddNewScheduleDialog = ({
                             name="vehicleId"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col w-full">
-                                    <FormLabel>Service Detail</FormLabel>
+                                    <FormLabel>Service Vehicle</FormLabel>
                                     <VehicleCombobox
+                                        isDisable={!!vehicleId}
                                         vehicles={vehicles}
                                         selectedId={field.value}
                                         handleSelect={(id: string) => form.setValue('vehicleId', id)}

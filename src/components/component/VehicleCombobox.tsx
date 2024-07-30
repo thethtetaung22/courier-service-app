@@ -16,34 +16,13 @@ import {
     PopoverTrigger,
 } from "@/components/ui"
 
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
-
 export function VehicleCombobox({
+    isDisable,
     vehicles,
     selectedId,
     handleSelect
 }: {
+    isDisable: boolean;
     vehicles: Record<string, any>[];
     selectedId?: string;
     handleSelect: (id: string) => void;
@@ -55,6 +34,7 @@ export function VehicleCombobox({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
+                    disabled={isDisable}
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}

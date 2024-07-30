@@ -1,6 +1,7 @@
 import React from 'react'
 import { VehicleInterface } from '@/lib/interfaces'
 import ScheduleTableView from '../Maintenance/ScheduleTableView'
+import AddNewScheduleDialog from '../Maintenance/AddNewScheduleDialog';
 
 const VehicleDetails = ({
     vehicles,
@@ -56,10 +57,14 @@ const VehicleDetails = ({
                     </div>
                 </div>
 
-                <h1 className="font-semibold text-lg md:text-2xl mt-4">Maintenance:</h1>
+                <div className='flex justify-between items-center mt-4'>
+                    <h1 className="font-semibold text-lg md:text-2xl">Maintenance</h1>
+                    <AddNewScheduleDialog vehicleId={vehicle.id} vehicles={vehicles} />
+                </div>
                 {
                     vehicle?.schedules?.length > 0 ? (
                         <ScheduleTableView
+                            vehicleId={vehicle.id}
                             vehicles={vehicles}
                             schedules={vehicle?.schedules?.map(schedule => ({ ...schedule, vehicle: { licensePlate: vehicle.licensePlate, make: vehicle.make } }))}
                         />

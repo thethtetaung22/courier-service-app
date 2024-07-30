@@ -24,10 +24,12 @@ import { useToast } from "@/components/ui/use-toast";
 
 const ScheduleTableView = ({
     schedules,
-    vehicles
+    vehicles,
+    vehicleId
 }: {
     schedules: Record<string, any>[];
-    vehicles: any[]
+    vehicles: any[];
+    vehicleId?: string;
 }) => {
     const [data, setData] = useState(schedules);
     const [sortBy, setSortBy] = useState<string | null>(null);
@@ -185,6 +187,7 @@ const ScheduleTableView = ({
                                                 isEdit={true}
                                                 schedule={schedule as any}
                                                 vehicles={vehicles}
+                                                vehicleId={vehicleId}
                                                 trigger={
                                                     <Button variant={'ghost'} className="w-full p-0 px-2">
                                                         <span className="text-left w-full">Edit</span>
