@@ -198,13 +198,13 @@ export const getSchedules = async (params: Record<string, any>) => {
             },
             include: {
                 vehicle: true
-            } as any,
+            },
             orderBy: {
                 createdAt: 'desc'
-            } as any,
+            },
             take,
             skip,
-        });
+        }) as any;
 
         return {
             success: true,
