@@ -4,8 +4,7 @@ import { z } from "zod";
 import { createScheduleSchema, updateScheduleSchema } from "@/schemas/schedule";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@prisma/client";
-import { SCHEDULE_STATUS } from "../lib/enums";
+import { SCHEDULE_STATUS } from "@/lib/enums";
 
 export const createSchedule = async (
     data: z.infer<typeof createScheduleSchema>
@@ -116,7 +115,7 @@ export const deleteSchedule = async (id: string) => {
 export const getSchedules = async (params: Record<string, any>) => {
     try {
 
-        let where: Prisma.ScheduleWhereInput | undefined = {};
+        let where: Record<string, any> = {};
         const take = 8, skip = params?.page > 1 ? ((Number(params.page) - 1) * take) : 0;
 
         if (params?.query) {
