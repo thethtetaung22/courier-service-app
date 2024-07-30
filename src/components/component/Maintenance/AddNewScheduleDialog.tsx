@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Button,
     Calendar,
@@ -41,7 +41,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { createScheduleSchema, updateScheduleSchema } from '@/schemas/schedule';
 import { format } from "date-fns"
 import { VehicleCombobox } from '../VehicleCombobox';
-import { createSchedule } from '@/actions/schedule';
+import { createSchedule, updateSchedule } from '@/actions/schedule';
+import { useRouter } from 'next/navigation';
 
 const AddNewScheduleDialog = ({
     isEdit,
@@ -55,11 +56,11 @@ const AddNewScheduleDialog = ({
     vehicles: any[]
 }) => {
     const { toast } = useToast();
-
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [hour, setHour] = useState('06');
     const [minute, setMinute] = useState('00');
-    const [detail, setDetail] = useState('');
+    const [detail, setDetail] = useState(schedule?.detail || '');
 
     const form = useForm<z.infer<typeof createScheduleSchema>>({
         resolver: zodResolver(createScheduleSchema),
@@ -72,37 +73,39 @@ const AddNewScheduleDialog = ({
     });
 
     const onSubmit = async (data: z.infer<typeof createScheduleSchema | typeof updateScheduleSchema>) => {
-        console.log(data);
-        console.log(hour, minute);
         let [day, month, year]: any = data?.serviceDate?.toLocaleDateString()?.split('/');
-        console.log(`${month}-${day}-${year} ${hour}:${minute}`);
+
         const payload = {
             ...data,
             serviceDate: new Date(`${month}-${day}-${year} ${hour}:${minute}`)
         } as any;
-        console.log(payload);
+
         if (isEdit && schedule?.id) {
-            // const result = await updateVehicle(vehicle.id, payload);
+            const result = await updateSchedule({
+                id: schedule.id,
+                ...payload
+            });
 
-            // if (result?.success) {
-            //     setOpen(false);
-            //     form.reset();
-            // }
-            // router.refresh();
+            if (result?.success) {
+                setOpen(false);
+                form.reset();
+                router.refresh();
+            }
 
-            // toast({
-            //     title: result?.message,
-            //     style: {
-            //         background: result?.success ? 'green' : 'red',
-            //         color: 'white'
-            //     }
-            // });
+            toast({
+                title: result?.message,
+                style: {
+                    background: result?.success ? 'green' : 'red',
+                    color: 'white'
+                }
+            });
         } else {
             const result = await createSchedule(payload);
 
             if (result?.success) {
                 setOpen(false);
                 form.reset();
+                router.refresh();
             }
 
             toast({
@@ -115,6 +118,17 @@ const AddNewScheduleDialog = ({
         }
     }
 
+    useEffect(() => {
+        if (schedule?.serviceDate) {
+            const h = schedule.serviceDate.getHours(), m = schedule?.serviceDate?.getMinutes();
+            setHour(`${h < 10 ? '0' : ''}${h}`);
+            setMinute(`${m < 10 ? '0' : ''}${m}`);
+        }
+        if (schedule?.vehicleId) {
+            form.setValue('vehicleId', schedule.vehicleId)
+        }
+    }, [schedule])
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -122,15 +136,15 @@ const AddNewScheduleDialog = ({
                     trigger || (
                         <Button className="ml-auto space-x-1 bg-[#000000] text-[#ffffff] rounded-[5px] hover:bg-[#000000]" size="sm">
                             <Plus />
-                            <span>Add Schedule</span>
+                            <span>Add Maintenance</span>
                         </Button>
                     )
                 }
             </DialogTrigger>
             <DialogContent className='bg-white max-w-xl w-full p-4 space-y-4 rounded-xl max-h-[80vh] overflow-auto'>
                 <DialogHeader>
-                    <DialogTitle>{isEdit ? 'Edit' : 'Add New'} Schedule</DialogTitle>
-                    <DialogDescription>{isEdit ? 'Edit the vehicle' : 'Add the vehicle '} schedule details here.</DialogDescription>
+                    <DialogTitle>{isEdit ? 'Edit' : 'Add New'} Maintenance</DialogTitle>
+                    <DialogDescription>{isEdit ? 'Edit the vehicle' : 'Add the vehicle '} maintenance details here.</DialogDescription>
                 </DialogHeader>
 
                 <Form {...form}>
@@ -249,6 +263,7 @@ const AddNewScheduleDialog = ({
                                     <FormLabel>Service Detail</FormLabel>
                                     <VehicleCombobox
                                         vehicles={vehicles}
+                                        selectedId={field.value}
                                         handleSelect={(id: string) => form.setValue('vehicleId', id)}
                                     />
                                 </FormItem>

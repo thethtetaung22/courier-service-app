@@ -41,13 +41,15 @@ const frameworks = [
 
 export function VehicleCombobox({
     vehicles,
+    selectedId,
     handleSelect
 }: {
     vehicles: Record<string, any>[];
+    selectedId?: string;
     handleSelect: (id: string) => void;
 }) {
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("");
+    const [value, setValue] = React.useState(selectedId);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -69,7 +71,7 @@ export function VehicleCombobox({
                     <CommandInput placeholder="Search vehicle" onChangeCapture={() => console.log(value)} />
                     <CommandEmpty>No framework found.</CommandEmpty>
                     <CommandGroup>
-                        <CommandList>
+                        <CommandList className="max-h-[300px]">
                             {
                                 vehicles.map((vehicle) => (
                                     <CommandItem

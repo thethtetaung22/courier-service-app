@@ -28,8 +28,8 @@ const Schedules = ({
 }) => {
 
     return (
-        <TableTemplate title="Schedules" actionButtons={<AddNewScheduleDialog vehicles={vehicles} />}>
-            <ScheduleTable total={total} schedules={schedules} />
+        <TableTemplate title="Maintenance" actionButtons={<AddNewScheduleDialog vehicles={vehicles} />}>
+            <ScheduleTable total={total} schedules={schedules} vehicles={vehicles} />
         </TableTemplate>
     )
 }

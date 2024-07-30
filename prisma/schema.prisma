@@ -33,6 +33,7 @@ model Vehicle {
     fuelEfficiency Float
     status         VehicleStatus @default(Active)
     schedules      Schedule[]
+    isDeleted      Boolean       @default(false)
     updatedAt      DateTime      @updatedAt
     createdAt      DateTime      @default(now())
 
@@ -46,6 +47,7 @@ model Schedule {
     serviceDate DateTime
     detail      String
     status      ScheduleStatus @default(SCHEDULED)
+    isDeleted   Boolean        @default(false)
     updatedAt   DateTime       @updatedAt
     createdAt   DateTime       @default(now())
 

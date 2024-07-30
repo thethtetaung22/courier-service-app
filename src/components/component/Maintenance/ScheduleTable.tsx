@@ -19,17 +19,23 @@ import { cn } from "@/lib/utils";
 import { ScheduleInterface } from "@/lib/interfaces";
 import { format } from "date-fns";
 import TablePagination from "../Pagination";
+import AddNewScheduleDialog from "./AddNewScheduleDialog";
+import { deleteSchedule } from "@/actions/schedule";
+import { useToast } from "@/components/ui/use-toast";
 
 const ScheduleTable = ({
     total,
-    schedules
+    schedules,
+    vehicles
 }: {
     total?: number;
     schedules: ScheduleInterface[];
+    vehicles: any[];
 }) => {
     const [data, setData] = useState(schedules);
     const [sortBy, setSortBy] = useState<string | null>(null);
     const [order, setOrder] = useState<string | null>('asc');
+    const { toast } = useToast();
 
     const handleSort = (name: string, isVehicle = false) => {
         setSortBy(name);
@@ -46,6 +52,17 @@ const ScheduleTable = ({
         setOrder(prev => prev === 'asc' ? 'desc' : 'asc');
     }
 
+    const handleDelete = async (id: string) => {
+        const result = await deleteSchedule(id);
+        toast({
+            title: result.message,
+            style: {
+                background: result?.success ? 'green' : 'red',
+                color: 'white'
+            }
+        });
+    }
+
     useEffect(() => {
         setData(schedules);
     }, [schedules]);
@@ -53,11 +70,11 @@ const ScheduleTable = ({
     return (
         <>
             <div>
-                <div className="border-none shadow-sm rounded-lg max-h-[68vh] max-w-[90vw] overflow-auto">
+                <div className="border-none shadow-sm rounded-lg max-h-[62vh] max-w-[90vw] overflow-auto">
                     <Table>
                         <TableHeader className="sticky top-0 z-10 bg-white rounded-xl">
                             <TableRow className="flex py-3 items-center">
-                                <TableHead className="w-[140px] lg:w-max lg:min-w-[160px] h-full flex-1 flex items-center">
+                                <TableHead className="w-[140px] lg:w-max lg:min-w-[160px] h-full flex-1 hidden md:flex items-center">
                                     <span>ID</span>
                                     <Button variant={'ghost'} className="px-2" onClick={() => handleSort('id')}>
                                         {
@@ -73,7 +90,7 @@ const ScheduleTable = ({
                                 </TableHead>
                                 <TableHead className="hidden md:flex items-center w-[140px] lg:w-max lg:min-w-[160px] font-medium h-full flex-1">
                                     <span>Vehicle ID</span>
-                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('vehicleId')}>
+                                    <Button variant={'link'} className="px:0 lg:px-2" onClick={() => handleSort('vehicleId')}>
                                         {
                                             sortBy === 'vehicleId' ? order === 'asc' ? (
                                                 < ArrowDownNarrowWide size={17} className="text-black p-0" />
@@ -87,7 +104,7 @@ const ScheduleTable = ({
                                 </TableHead>
                                 <TableHead className="lg:min-w-[150px] lg:text-left  flex items-center flex-1 h-full">
                                     <span>Vehicle No.</span>
-                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('licensePlate', true)}>
+                                    <Button variant={'link'} className="px-0 md:px-2 cursor-pointer" onClick={() => handleSort('licensePlate', true)}>
                                         {
                                             sortBy === 'licensePlate' ? order === 'asc' ? (
                                                 < ArrowDownNarrowWide size={17} className="text-black p-0" />
@@ -101,7 +118,7 @@ const ScheduleTable = ({
                                 </TableHead>
                                 <TableHead className="lg:min-w-[150px] lg:text-left flex items-center flex-1 h-full">
                                     <span>Vehicle Brand</span>
-                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('make', true)}>
+                                    <Button variant={'link'} className="px-0 md:px-2 cursor-pointer" onClick={() => handleSort('make', true)}>
                                         {
                                             sortBy === 'make' ? order === 'asc' ? (
                                                 < ArrowDownNarrowWide size={17} className="text-black p-0" />
@@ -113,7 +130,7 @@ const ScheduleTable = ({
                                         }
                                     </Button>
                                 </TableHead>
-                                <TableHead className="flex-1 h-full flex items-center">
+                                <TableHead className="flex-1 h-full flex items-center justify-center">
                                     <span>Service Date</span>
                                     <Button variant={'ghost'} className="px-2" onClick={() => handleSort('serviceDate')}>
                                         {
@@ -128,7 +145,7 @@ const ScheduleTable = ({
                                     </Button>
                                 </TableHead>
                                 <TableHead className="hidden sm:flex items-center flex-1 h-full">
-                                    <span>Maintenance Type</span>
+                                    <span className="text-center">Maintenance Type</span>
                                     <Button variant={'ghost'} className="px-2" onClick={() => handleSort('detail')}>
                                         {
                                             sortBy === 'detail' ? order === 'asc' ? (
@@ -157,7 +174,7 @@ const ScheduleTable = ({
                                         <TableCell className="hidden md:table-cell w-[140px] font-medium lg:w-max lg:min-w-[160px] h-full flex-1 overflow-hidden text-ellipsis flex-nowrap whitespace-nowrap text-nowrap">{schedule?.vehicleId}</TableCell>
                                         <TableCell className="flex-1 h-full">{schedule?.vehicle?.licensePlate}</TableCell>
                                         <TableCell className="flex-1 h-full">{schedule?.vehicle?.make}</TableCell>
-                                        <TableCell className="flex-1 h-full w-max">{format(schedule.serviceDate, 'PPpp')}</TableCell>
+                                        <TableCell className="flex-1 h-full w-max max-w-[160px] text-left">{format(schedule.serviceDate, 'PPpp')}</TableCell>
                                         <TableCell className="hidden md:table-cell flex-1 h-full">{schedule.detail?.replace('_', ' ')}</TableCell>
                                         <TableCell className="text-center w-[40px] lg:w-auto">
                                             <DropdownMenu>
@@ -169,8 +186,19 @@ const ScheduleTable = ({
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end" className="bg-[#ffffff] border-gray-300 shadow-xl">
                                                     <DropdownMenuItem className="hover:bg-[#bbb]">View Details</DropdownMenuItem>
-                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                    <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
+                                                    <DropdownMenuItem asChild>
+                                                        <AddNewScheduleDialog
+                                                            isEdit={true}
+                                                            schedule={schedule}
+                                                            vehicles={vehicles}
+                                                            trigger={
+                                                                <Button variant={'ghost'} className="w-full p-0 px-2">
+                                                                    <span className="text-left w-full">Edit</span>
+                                                                </Button>
+                                                            }
+                                                        />
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(schedule.id)}>Delete</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>

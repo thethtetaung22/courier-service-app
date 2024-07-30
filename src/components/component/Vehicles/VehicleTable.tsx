@@ -55,7 +55,7 @@ const VehicleTable = ({
     return (
         <>
             <div>
-                <div className="border-none shadow-sm rounded-lg max-h-[68vh] overflow-auto">
+                <div className="border-none shadow-sm rounded-lg max-h-[62vh] overflow-auto">
                     <Table>
                         <TableHeader className="sticky top-0 z-10 bg-white rounded-xl">
                             <TableRow className="flex items-center py-3">

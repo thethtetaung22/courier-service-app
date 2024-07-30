@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from "zod";
-import { createScheduleSchema } from "@/schemas/schedule";
+import { createScheduleSchema, updateScheduleSchema } from "@/schemas/schedule";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
@@ -13,9 +13,9 @@ export const createSchedule = async (
     try {
 
         const validation = createScheduleSchema.safeParse(data);
-        console.log(validation);
+
         if (!validation.success) return { message: "Invalid Field", success: false };
-        console.log('Data:', validation.data);
+
         const {
             serviceDate,
             vehicleId,
@@ -34,15 +34,81 @@ export const createSchedule = async (
 
         return {
             success: true,
-            message: 'Schedule created successful.',
-            result: result
+            message: 'Schedule created successful.'
         };
     } catch (error) {
         console.log(error);
         return {
             success: false,
-            message: 'Failed to create schedule.',
-            error
+            message: 'Failed to create schedule.'
+        };
+    }
+};
+
+export const updateSchedule = async (
+    data: z.infer<typeof updateScheduleSchema>
+) => {
+    try {
+
+        const validation = updateScheduleSchema.safeParse(data);
+        if (!validation.success) return { message: "Invalid Field", success: false };
+        const {
+            id,
+            serviceDate,
+            vehicleId,
+            detail
+        } = validation.data;
+
+        const result = await prisma.schedule.update({
+            where: {
+                id
+            },
+            data: {
+                serviceDate,
+                vehicleId,
+                detail
+            }
+        });
+        console.log('Schedule Updated:', result);
+
+        revalidatePath("/schedules");
+
+        return {
+            success: true,
+            message: 'Schedule updated successful.',
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: 'Failed to update schedule.'
+        };
+    }
+};
+
+export const deleteSchedule = async (id: string) => {
+    try {
+
+        await prisma.schedule.update({
+            where: {
+                id
+            },
+            data: {
+                isDeleted: true
+            }
+        });
+
+        revalidatePath("/schedules");
+
+        return {
+            success: true,
+            message: 'Schedule deleted successful.',
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: 'Failed to delete schedule.'
         };
     }
 };
@@ -118,15 +184,27 @@ export const getSchedules = async (params: Record<string, any>) => {
 
         const total = await prisma.schedule.count();
         const result = await prisma.schedule.findMany({
-            where,
-            take,
-            skip,
+            where: {
+                AND: [
+                    {
+                        isDeleted: false,
+                    },
+                    {
+                        vehicle: {
+                            isDeleted: false
+                        }
+                    },
+                    where,
+                ]
+            },
             include: {
                 vehicle: true
             },
             orderBy: {
                 createdAt: 'desc'
             },
+            take,
+            skip,
         });
 
         return {

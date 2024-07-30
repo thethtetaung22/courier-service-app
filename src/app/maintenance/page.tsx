@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react'
-import Schedules from '@/components/component/Schedules';
+import Schedules from '@/components/component/Maintenance';
 import { getVehiclesForSchedule } from '@/actions/vehicle';
 import { getSchedules } from '@/actions/schedule';
 
-const SchedulesPage = async ({
+const MaintenancePage = async ({
     searchParams
 }: {
     searchParams: { [key: string]: string | string[] | undefined }
@@ -18,4 +18,4 @@ const SchedulesPage = async ({
     )
 }
 
-export default SchedulesPage;
+export default MaintenancePage;

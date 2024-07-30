@@ -55,19 +55,25 @@ export const getVehicles = async (params: Record<string, any>) => {
 
         const total = await prisma.vehicle.count({ where });
         const result = await prisma.vehicle.findMany({
-            where,
-            orderBy: { createdAt: 'desc' },
+            where: {
+                AND: [
+                    { isDeleted: false },
+                    where
+                ]
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
             take,
             skip: params?.page > 1 ? ((Number(params.page) - 1) * take) : 0
         });
-
         return {
             success: true,
             total,
             result
         };
     } catch (error) {
-
+        console.log(error);
         return {
             success: false,
             message: 'Failed to get vehicles.',
@@ -198,10 +204,13 @@ export const updateVehicle = async (
 export const deleteVehicle = async (id: string) => {
     try {
 
-        await prisma.vehicle.delete({
-            where: { id }
+        await prisma.vehicle.update({
+            where: { id },
+            data: { isDeleted: true }
         });
-        revalidatePath('/vehicles')
+
+        revalidatePath('/vehicles');
+
         return {
             success: true,
             message: 'Vehicle deleted successful.'
@@ -218,6 +227,9 @@ export const deleteVehicle = async (id: string) => {
 export const getVehiclesForSchedule = async () => {
     try {
         const result = await prisma.vehicle.findMany({
+            where: {
+                isDeleted: false
+            },
             select: {
                 id: true,
                 licensePlate: true,
