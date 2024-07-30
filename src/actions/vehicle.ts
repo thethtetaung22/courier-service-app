@@ -9,6 +9,7 @@ export const getVehicles = async (params: Record<string, any>) => {
     try {
         let where: Record<string, any> = {};
         const take = 8;
+
         if (params?.query) {
             const queryStr = String(params.query);
 
@@ -52,7 +53,7 @@ export const getVehicles = async (params: Record<string, any>) => {
             }
         };
 
-        const total = await prisma.vehicle.count();
+        const total = await prisma.vehicle.count({ where });
         const result = await prisma.vehicle.findMany({
             where,
             orderBy: { createdAt: 'desc' },
