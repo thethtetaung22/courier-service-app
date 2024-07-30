@@ -4,6 +4,7 @@ import { createVehicleSchema, updateVehicleSchema } from "@/schemas/vehicle";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { VehicleInterface } from "@/lib/interfaces";
 
 export const getVehicles = async (params: Record<string, any>) => {
     try {
@@ -78,6 +79,28 @@ export const getVehicles = async (params: Record<string, any>) => {
             success: false,
             message: 'Failed to get vehicles.',
             result: []
+        };
+    }
+}
+
+export const getVehicleById = async (id: string): Promise<{ success: boolean, message?: string, vehicle?: VehicleInterface | null }> => {
+    try {
+        const vehicle = await prisma.vehicle.findFirst({
+            where: { id },
+            include: {
+                schedules: true
+            }
+        });
+
+        return {
+            success: false,
+            vehicle
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
+            message: 'Failed to get vehicle details.',
         };
     }
 }

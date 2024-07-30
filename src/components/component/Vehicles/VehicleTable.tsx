@@ -21,6 +21,7 @@ import { Vehicle } from "@prisma/client";
 import DeleteVehicleButton from "./DeleteVehicleButton";
 import ViewVehicleDetailsDialog from "./ViewVehicleDetailsDialog";
 import TablePagination from "../Pagination";
+import Link from "next/link";
 
 const VehicleTable = ({
     total,
@@ -193,7 +194,10 @@ const VehicleTable = ({
                                                 <DropdownMenuContent align="end" className="bg-[#ffffff] border-gray-300 shadow-xl">
 
                                                     <DropdownMenuItem className="hover:bg-[#bbb]" asChild>
-                                                        <ViewVehicleDetailsDialog vehicle={vehicle} />
+                                                        {/* <ViewVehicleDetailsDialog vehicle={vehicle} /> */}
+                                                        <Link href={`/vehicles/${vehicle.id}`} className="w-full p-0 px-2">
+                                                            <span className="text-left w-full">View Details</span>
+                                                        </Link>
                                                     </DropdownMenuItem>
 
                                                     <DropdownMenuItem asChild>
