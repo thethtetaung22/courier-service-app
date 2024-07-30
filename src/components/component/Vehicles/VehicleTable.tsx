@@ -1,4 +1,6 @@
-import React from "react";
+'use client'
+
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Table,
@@ -19,16 +21,13 @@ import {
     PaginationNext,
     PaginationPrevious
 } from "@/components/ui";
-import { ArrowDownUp, EllipsisVertical } from "lucide-react";
-// import { vehicles } from "@/lib/constants";
-import { cn } from "../../../lib/utils";
+import { ArrowDownNarrowWide, ArrowDownUp, ArrowUpWideNarrow, EllipsisVertical } from "lucide-react";
+import { cn } from "@/lib/utils";
 import AddNewVehicleDialog from "./AddNewVehicleDialog";
 import { Vehicle } from "@prisma/client";
-import { deleteVehicle } from "../../../actions/vehicle";
-import { toast } from "sonner";
 import DeleteVehicleButton from "./DeleteVehicleButton";
-import { DropdownMenuItemIndicator } from "@radix-ui/react-dropdown-menu";
 import ViewVehicleDetailsDialog from "./ViewVehicleDetailsDialog";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const VehicleTable = ({
     total,
@@ -37,6 +36,28 @@ const VehicleTable = ({
     total?: number,
     vehicles: Array<Vehicle>
 }) => {
+    const [data, setData] = useState(vehicles);
+    const [sortBy, setSortBy] = useState<string | null>(null);
+    const [order, setOrder] = useState<string | null>('asc');
+
+    const handleSort = (name: string) => {
+        setSortBy(name);
+        setData([...data.sort((a: Record<string, any>, b: Record<string, any>) => {
+            if (a[name] < b[name]) {
+                return order === 'asc' ? 1 : -1;
+            }
+            if (a[name] > b[name]) {
+                return order === 'asc' ? -1 : 1;
+            }
+            return 0;
+        })]);
+
+        setOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    }
+
+    useEffect(() => {
+        setData(vehicles);
+    }, [vehicles]);
 
     return (
         <>
@@ -47,50 +68,108 @@ const VehicleTable = ({
                             <TableRow className="flex items-center py-3">
                                 <TableHead className="w-[160px] lg:w-[300px] flex h-full items-center">
                                     <span>ID</span>
-                                    <Button variant={'ghost'} className="px-2">
-                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('id')}>
+                                        {
+                                            sortBy === 'id' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
                                     </Button>
                                 </TableHead>
                                 <TableHead className="lg:min-w-[150px] lg:text-left text-center flex-1 h-full flex items-center">
                                     <span>License No.</span>
-                                    <Button variant={'ghost'} className="px-2">
-                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('licensePlate')}>
+                                        {
+                                            sortBy === 'licensePlate' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
                                     </Button>
                                 </TableHead>
                                 <TableHead className="hidden flex-1 h-full md:flex items-center">
                                     <span>Brand</span>
-                                    <Button variant={'ghost'} className="px-2">
-                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('make')}>
+                                        {
+                                            sortBy === 'make' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
                                     </Button>
                                 </TableHead>
                                 <TableHead className="hidden flex-1 h-full md:flex items-center">
-
                                     <span>Model</span>
-                                    <Button variant={'ghost'} className="px-2">
-                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('model')}>
+                                        {
+                                            sortBy === 'model' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
                                     </Button>
                                 </TableHead>
                                 <TableHead className="hidden flex-1 h-full md:flex items-center">
                                     <span>Year</span>
-                                    <Button variant={'ghost'} className="px-2">
-                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('year')}>
+                                        {
+                                            sortBy === 'year' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
                                     </Button>
                                 </TableHead>
-                                <TableHead className="hidden md:flex text-center flex-1 h-full items-center">
+                                <TableHead className="hidden md:flex text-center flex-1 h-full items-center justify-center">
                                     <span>Status</span>
-                                    <Button variant={'ghost'} className="px-2">
-                                        <ArrowDownUp size={15} className="text-black p-0" />
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('status')}>
+                                        {
+                                            sortBy === 'status' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
                                     </Button>
                                 </TableHead>
                                 <TableHead className="hidden text-center flex-1 h-full md:flex items-center">
                                     <span>Fuel Efficiency</span>
+                                    <Button variant={'ghost'} className="px-2" onClick={() => handleSort('fuelEfficiency')}>
+                                        {
+                                            sortBy === 'fuelEfficiency' ? order === 'asc' ? (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            ) : (
+                                                <ArrowUpWideNarrow size={17} className="text-black p-0" />
+                                            ) : (
+                                                < ArrowDownNarrowWide size={17} className="text-black p-0" />
+                                            )
+                                        }
+                                    </Button>
                                 </TableHead>
                                 <TableHead className="text-right h-full">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody className="w-full">
                             {
-                                vehicles?.map((vehicle, i) => (
+                                data?.map((vehicle, i) => (
                                     <TableRow key={i} className={cn(
                                         "flex items-center hover:bg-gray-200 cursor-pointer",
                                         i % 2 === 0 && 'bg-sky-100'
@@ -171,4 +250,4 @@ const VehicleTable = ({
     )
 }
 
-export default VehicleTable
+export default VehicleTable;

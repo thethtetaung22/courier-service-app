@@ -7,21 +7,57 @@ import { revalidatePath } from "next/cache";
 
 export const getVehicles = async (params: Record<string, any>) => {
     try {
-        let orderBy = { createdAt: 'desc' } as Record<string, 'desc' | 'asc'>;
-
-        if (params?.sort) {
-            orderBy = {
-                [params.sort]: params?.order ? params?.order : 'asc'
-            }
-        }
+        let where: Record<string, any> = {};
 
         if (params?.query) {
+            const queryStr = String(params.query);
 
-        }
+            where = {
+                OR: [
+                    {
+                        licensePlate: {
+                            contains: queryStr,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        color: {
+                            contains: queryStr,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        make: {
+                            contains: queryStr,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        model: {
+                            contains: queryStr,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        year: {
+                            equals: Number(queryStr) || undefined
+                        }
+                    },
+                    {
+                        fuelEfficiency: {
+                            equals: Number(queryStr) || undefined
+                        }
+                    },
+                ]
+            }
+        };
 
         const total = await prisma.vehicle.count();
         const result = await prisma.vehicle.findMany({
-            orderBy: orderBy
+            where,
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+            skip: params?.page ? Number(params.page) * 10 : 0
         });
 
         return {

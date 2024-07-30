@@ -10,7 +10,7 @@ const SchedulesPage = async ({
 }) => {
     const vehicles = await getVehiclesForSchedule();
     const schedules = await getSchedules({ ...searchParams }) as any;
-    console.log('Schedules:', schedules);
+
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Schedules vehicles={vehicles?.result} schedules={schedules?.result} total={schedules?.total} />
