@@ -1,0 +1,33 @@
+name: Deploy Next.js Application
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Create .env file
+        run: echo "DATABASE_URL"=${{secrets.DATABASE_URL}} >> .env
+      - name: Build Docker Image
+        run: docker build -t thethtet/courier .
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish Image to docker hub
+        run: docker push thethtet/courier:latest
+  
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Pull Image from Docker Hub
+        run: docker pull thethtet/courier:latest
+      - name: Delete Old Container
+        run: docker rm -f courier-container
+      - name: Run Docker Container
+        run: docker run -d -p 3000:3000 --name courier-container thethtet/courier
